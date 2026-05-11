@@ -426,20 +426,20 @@ def compute_p3(
     fig = make_subplots(
         rows=2,
         cols=2,
-        row_heights=[0.55, 0.45],
-        column_widths=[0.62, 0.38],
+        row_heights=[0.5, 0.5],
+        column_widths=[0.5, 0.5],
         specs=[
-            [{"type": "surface"}, {"type": "scatter"}],
-            [{"type": "heatmap"}, {"type": "bar"}],
+            [{"type": "surface"}, {"type": "xy"}],
+            [{"type": "xy"}, {"type": "xy"}],
         ],
         subplot_titles=(
-            "Rolling correlation surface (pairs × days)",
-            "Average correlation (color = regime)",
-            "Final correlation matrix",
-            "Mean |ρ| by pair (latest window)",
+            "Rolling Correlation Surface",
+            "Average Correlation (Regime Color)",
+            "Final Correlation Matrix",
+            "Mean Absolute Correlation by Pair",
         ),
-        vertical_spacing=0.12,
-        horizontal_spacing=0.10,
+        vertical_spacing=0.15,
+        horizontal_spacing=0.12,
     )
 
     fig.add_trace(
@@ -450,16 +450,9 @@ def compute_p3(
             colorscale="RdBu",
             cmin=-1,
             cmax=1,
-            colorbar=dict(title="ρ", len=0.6, y=0.72),
+            colorbar=dict(title="ρ", len=0.35, y=0.8, x=0.46),
             hovertemplate="Day %{x}<br>Pair %{y}<br>ρ %{z:.2f}<extra></extra>",
         ),
-        row=1,
-        col=1,
-    )
-    fig.update_yaxes(
-        tickmode="array",
-        tickvals=np.arange(n_pairs) + 0.0,
-        ticktext=pair_labels,
         row=1,
         col=1,
     )
@@ -486,7 +479,7 @@ def compute_p3(
             colorscale="RdBu",
             zmin=-1,
             zmax=1,
-            colorbar=dict(title="ρ", len=0.5, y=0.22),
+            colorbar=dict(title="ρ", len=0.35, y=0.2, x=0.46),
         ),
         row=2,
         col=1,
@@ -497,7 +490,7 @@ def compute_p3(
         go.Bar(
             x=pair_labels,
             y=mean_abs,
-            marker_color="#8899dd",
+            marker_color="#38bdf8",
             name="mean |ρ|",
         ),
         row=2,
@@ -508,8 +501,8 @@ def compute_p3(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(color="#aaaaff", family="Inter, sans-serif", size=10),
-        height=800,
-        margin=dict(t=100, b=40, l=60, r=20),
+        height=850,
+        margin=dict(t=100, b=100, l=60, r=20),
         title=dict(
             text="Asset Correlation Dynamics (Markov-Switching Simulation)",
             x=0.5,
@@ -518,26 +511,21 @@ def compute_p3(
         showlegend=False,
     )
     
-    # Asset descriptions for the matrix
-    asset_desc = {
-        "SPY": "S&P 500",
-        "QQQ": "Nasdaq 100",
-        "TLT": "20Y Treasury",
-        "GLD": "Gold",
-        "VIX_inv": "Inverse VIX",
-        "HYG": "High Yield Bonds"
-    }
+    fig.update_xaxes(gridcolor="#222", zerolinecolor="#333", row=1, col=2)
+    fig.update_yaxes(gridcolor="#222", zerolinecolor="#333", row=1, col=2)
+    fig.update_xaxes(gridcolor="#222", zerolinecolor="#333", row=2, col=2)
+    fig.update_yaxes(gridcolor="#222", zerolinecolor="#333", row=2, col=2)
     
-    fig.update_xaxes(gridcolor="#222", zerolinecolor="#333")
-    fig.update_yaxes(gridcolor="#222", zerolinecolor="#333")
-    
-    for i in range(1, 3):
-        for j in range(1, 3):
-            fig.update_xaxes(title_font=dict(size=10), row=i, col=j)
-            fig.update_yaxes(title_font=dict(size=10), row=i, col=j)
+    fig.update_xaxes(title_text="Trading Day", row=1, col=2)
+    fig.update_yaxes(title_text="Avg ρ", row=1, col=2)
+    fig.update_xaxes(tickangle=45, row=2, col=2)
+    fig.update_yaxes(title_text="|ρ|", row=2, col=2)
 
     fig.update_scenes(
         dict(
+            xaxis_title="Day",
+            yaxis_title="Pair Index",
+            zaxis_title="ρ",
             xaxis=dict(gridcolor="#333", showbackground=False),
             yaxis=dict(gridcolor="#333", showbackground=False),
             zaxis=dict(gridcolor="#333", showbackground=False),
