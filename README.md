@@ -1,12 +1,12 @@
 ---
 title: Cool Quant Projects
 emoji: 📊
-colorFrom: dark-blue
-colorTo: slate
+colorFrom: blue
+colorTo: gray
 sdk: docker
 pinned: false
 license: mit
-short_description: Premium Quant Finance Dashboard — Option Greeks, Monte Carlo Drawdowns, & Correlation Dynamics.
+short_description: Premium Quant Finance Dashboard — Greeks & Monte Carlo.
 ---
 
 # 🚀 Cool Quant Projects: Interactive Terminal
