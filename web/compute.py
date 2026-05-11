@@ -230,14 +230,14 @@ def compute_p2(
     fig = make_subplots(
         rows=1,
         cols=3,
-        column_widths=[0.52, 0.26, 0.22],
-        specs=[[{"type": "surface"}, {"type": "scatter3d"}, {"type": "bar"}]],
+        column_widths=[0.5, 0.25, 0.25],
+        specs=[[{"type": "surface"}, {"type": "scatter3d"}, {"type": "xy"}]],
         subplot_titles=(
             "Drawdown Density Surface",
             "Path Projections",
             "Terminal Wealth Distribution",
         ),
-        horizontal_spacing=0.04,
+        horizontal_spacing=0.08,
     )
 
     fig.add_trace(
@@ -247,7 +247,7 @@ def compute_p2(
             z=log_density,
             colorscale=radar_colors,
             showscale=True,
-            colorbar=dict(title="Density", len=0.4, y=0.5, x=0.48),
+            colorbar=dict(title="Density", len=0.4, y=0.5, x=0.45),
         ),
         row=1,
         col=1,
