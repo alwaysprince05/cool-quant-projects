@@ -6,7 +6,7 @@ colorTo: blue
 sdk: docker
 pinned: false
 license: mit
-short_description: Interactive quant finance visualizations — FastAPI + Plotly (Greeks, drawdowns, correlations).
+short_description: Interactive quant finance visualizations with FastAPI.
 ---
 
 # Cool Quant Projects
