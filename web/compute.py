@@ -438,8 +438,8 @@ def compute_p3(
             "Final Correlation Matrix",
             "Mean Absolute Correlation by Pair",
         ),
-        vertical_spacing=0.15,
-        horizontal_spacing=0.12,
+        vertical_spacing=0.18,
+        horizontal_spacing=0.15,
     )
 
     fig.add_trace(
@@ -450,7 +450,7 @@ def compute_p3(
             colorscale="RdBu",
             cmin=-1,
             cmax=1,
-            colorbar=dict(title="ρ", len=0.35, y=0.8, x=0.46),
+            colorbar=dict(title="ρ", len=0.3, y=0.8, x=0.45, thickness=15),
             hovertemplate="Day %{x}<br>Pair %{y}<br>ρ %{z:.2f}<extra></extra>",
         ),
         row=1,
@@ -463,8 +463,8 @@ def compute_p3(
             x=roll_days,
             y=avg_s,
             mode="lines+markers",
-            marker=dict(size=4, color=colors.tolist()),
-            line=dict(color="#888888", width=1),
+            marker=dict(size=3, color=colors.tolist()),
+            line=dict(color="#666", width=1),
             name="avg ρ",
         ),
         row=1,
@@ -479,7 +479,7 @@ def compute_p3(
             colorscale="RdBu",
             zmin=-1,
             zmax=1,
-            colorbar=dict(title="ρ", len=0.35, y=0.2, x=0.46),
+            colorbar=dict(title="ρ", len=0.3, y=0.2, x=0.45, thickness=15),
         ),
         row=2,
         col=1,
@@ -502,29 +502,26 @@ def compute_p3(
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(color="#aaaaff", family="Inter, sans-serif", size=10),
         height=850,
-        margin=dict(t=100, b=100, l=60, r=20),
+        margin=dict(t=120, b=120, l=100, r=40),
         title=dict(
             text="Asset Correlation Dynamics (Markov-Switching Simulation)",
             x=0.5,
-            font=dict(size=18, color="#fff"),
+            y=0.96,
+            font=dict(size=20, color="#fff"),
         ),
         showlegend=False,
     )
     
-    fig.update_xaxes(gridcolor="#222", zerolinecolor="#333", row=1, col=2)
-    fig.update_yaxes(gridcolor="#222", zerolinecolor="#333", row=1, col=2)
-    fig.update_xaxes(gridcolor="#222", zerolinecolor="#333", row=2, col=2)
-    fig.update_yaxes(gridcolor="#222", zerolinecolor="#333", row=2, col=2)
+    fig.update_xaxes(gridcolor="#222", zerolinecolor="#333", title_text="Trading Day", row=1, col=2)
+    fig.update_yaxes(gridcolor="#222", zerolinecolor="#333", title_text="Avg ρ", row=1, col=2)
     
-    fig.update_xaxes(title_text="Trading Day", row=1, col=2)
-    fig.update_yaxes(title_text="Avg ρ", row=1, col=2)
-    fig.update_xaxes(tickangle=45, row=2, col=2)
-    fig.update_yaxes(title_text="|ρ|", row=2, col=2)
+    fig.update_xaxes(gridcolor="#222", zerolinecolor="#333", tickangle=-45, row=2, col=2)
+    fig.update_yaxes(gridcolor="#222", zerolinecolor="#333", title_text="|ρ|", row=2, col=2)
 
     fig.update_scenes(
         dict(
             xaxis_title="Day",
-            yaxis_title="Pair Index",
+            yaxis_title="Pair",
             zaxis_title="ρ",
             xaxis=dict(gridcolor="#333", showbackground=False),
             yaxis=dict(gridcolor="#333", showbackground=False),
