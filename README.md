@@ -1,235 +1,111 @@
 ---
 title: Cool Quant Projects
 emoji: 📊
-colorFrom: gray
-colorTo: blue
+colorFrom: dark-blue
+colorTo: slate
 sdk: docker
 pinned: false
 license: mit
-short_description: Interactive quant finance visualizations with FastAPI.
+short_description: Premium Quant Finance Dashboard — Option Greeks, Monte Carlo Drawdowns, & Correlation Dynamics.
 ---
 
-# Cool Quant Projects
+# 🚀 Cool Quant Projects: Interactive Terminal
 
-Simulation-driven visualizations for quantitative finance: **Markov regime correlations**, **Monte Carlo drawdown topology**, and **Black–Scholes option Greeks** — as high-resolution Matplotlib exports and as an **interactive browser dashboard** (FastAPI + Plotly).
+A high-performance quantitative finance dashboard for simulation-driven visualizations. Analyze **Option Greek Manifolds**, **Monte Carlo Drawdown Topologies**, and **Markov-Switching Correlations** in a premium, interactive environment.
 
-**Repository:** [github.com/alwaysprince05/cool-quant-projects](https://github.com/alwaysprince05/cool-quant-projects)  
-**Maintainer:** [@alwaysprince05](https://github.com/alwaysprince05)  
-**License:** [MIT](LICENSE)
-
----
-
-## What is in this repo
-
-| Layer | What it does |
-|--------|----------------|
-| **Python scripts** | Original demos: NumPy / SciPy / Matplotlib, save PNG figures. |
-| **`web/`** | FastAPI backend + static SPA: change parameters, run simulations, **rotate/zoom** Plotly 3D charts in the browser. |
-| **`gallery/`** | Simple HTML page that embeds the exported PNGs (optional static preview). |
-
-No market data APIs or paid feeds — simulations use synthetic returns and closed-form option math.
+### 🔗 [View Live App on Hugging Face Spaces](https://huggingface.co/spaces/alwaysprince05e/cool-quant-projects)
 
 ---
 
-## Repository layout
+## 💎 Premium Features
+
+- **Interactive 3D Manifolds:** Rotate and zoom into Option Greeks (Gamma, Theta) and P&L surfaces.
+- **Advanced Risk Metrics:** Real-time calculation of **Sharpe Ratio**, **95% VaR**, and **CVaR (Conditional VaR)** for simulated paths.
+- **Regime-Switching Dynamics:** Explore how asset correlations change during "Calm" vs. "Crisis" regimes using Markov-chain simulations.
+- **High-Resolution Exports:** All simulations are built on Plotly and can be exported as high-res PNGs for research reports.
+- **Premium Dark UI:** A professional-grade interface built with glassmorphism, modern typography (Inter/Fira Code), and fluid micro-animations.
+
+---
+
+## 🛠 Repository Structure
 
 ```
 cool-quant-projects/
-├── Correlation Regime Dynamics/   # P3 — rolling ρ, regime switching
-│   ├── P3 correlations.py
-│   ├── readme.md
-│   └── p3_correlation_regimes.png # generated
-├── Drawdown Topology/             # P2 — fat-tailed paths, drawdown density
-│   ├── P2 drawdown.py
-│   ├── Readme.d.md
-│   └── p2_drawdown_topology.png   # generated
-├── Option Greeks Manifold/        # P1 — BS Greeks & P&L surfaces
-│   ├── P1 greeks.py
-│   └── outputs/p1_greeks_manifold.png
-├── web/                           # Interactive dashboard
-│   ├── app.py                     # FastAPI routes + static mount
-│   ├── compute.py                 # Plotly figure builders + JSON for Plotly.js
-│   ├── requirements.txt
-│   ├── run_dashboard.sh           # venv + uvicorn (recommended)
-│   └── static/index.html          # UI
-├── gallery/index.html             # Static gallery of PNGs
-├── Dockerfile                     # Hugging Face Spaces (Docker SDK)
-├── .dockerignore
-├── README.md
-└── LICENSE
+├── web/                           # Core Application
+│   ├── app.py                     # FastAPI Backend & API Routes
+│   ├── compute.py                 # Quant Logic (Black-Scholes, Monte Carlo, Markov-Switching)
+│   ├── requirements.txt           # Python Dependencies
+│   ├── run_dashboard.sh           # Local Execution Script
+│   └── static/                    # Premium UI (HTML/CSS/JS)
+├── gallery/                       # Static PNG Exports
+├── Dockerfile                     # Hugging Face Spaces Deployment Configuration
+├── README.md                      # Documentation
+└── LICENSE                        # MIT License
 ```
 
 ---
 
-## Quick start
+## 📈 Dashboard Modules
 
-### Clone
+### 1. Option Greeks Manifold
+Visualize the sensitivity of European options to price and time.
+- **P&L Surface:** Dynamic P&L based on Spot Price vs. Days to Expiration (DTE).
+- **Gamma/Theta Surfaces:** Analyze the rate of change in Delta and the impact of time decay across the manifold.
 
+### 2. Drawdown Topology (Monte Carlo)
+Simulate thousands of portfolio paths with fat-tailed returns.
+- **Fat-Tailed Shocks:** Mixture of Normal and Student-t distributions for realistic market stress.
+- **Risk Analytics:** Instant display of **Sharpe Ratio**, **Value at Risk (VaR)**, and **Conditional VaR (CVaR)**.
+- **Density Surface:** A 3D view of drawdown probability over time.
+
+### 3. Correlation Regime Dynamics
+Analyze how multi-asset portfolios behave during market shifts.
+- **Markov-Switching:** Two-state simulation (Calm vs. Crisis) with unique correlation matrices.
+- **Rolling Correlations:** Observe "correlation to one" phenomena during simulated stress events.
+
+---
+
+## 🚀 Quick Start (Local Development)
+
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/alwaysprince05/cool-quant-projects.git
-cd cool-quant-projects
+cd cool-quant-projects/cool-quant-projects
 ```
 
-### Core dependencies (Matplotlib scripts)
-
-**Python 3.10+** recommended (3.8+ should work).
-
+### 2. Run with Helper Script (Automatic Venv)
 ```bash
-pip install numpy matplotlib scipy
-```
-
----
-
-## 1. Matplotlib demos (export PNGs)
-
-Run from the **repository root** (`cool-quant-projects/`). Paths use quotes because folder names contain spaces.
-
-### Option Greeks Manifold
-
-```bash
-python3 "Option Greeks Manifold/P1 greeks.py"
-```
-
-Writes: `Option Greeks Manifold/outputs/p1_greeks_manifold.png`  
-Opens an interactive Matplotlib window (`plt.show()`).
-
-### Drawdown topology
-
-```bash
-python3 "Drawdown Topology/P2 drawdown.py"
-```
-
-Writes: `Drawdown Topology/p2_drawdown_topology.png`
-
-### Correlation regime dynamics
-
-```bash
-python3 "Correlation Regime Dynamics/P3 correlations.py"
-```
-
-Writes: `Correlation Regime Dynamics/p3_correlation_regimes.png`  
-(Script ends after save; no `plt.show()` in the original.)
-
-### Headless / CI (no display)
-
-```bash
-export MPLBACKEND=Agg
-python3 "Option Greeks Manifold/P1 greeks.py"
-```
-
----
-
-## 2. Interactive web dashboard (recommended)
-
-Browser UI with **tabs** (Greeks / Drawdown / Correlations), **form parameters**, and **Plotly** 3D charts (pan, zoom, rotate).
-
-### Option A — helper script (creates `.venv`, installs web deps)
-
-```bash
-chmod +x web/run_dashboard.sh    # first time only
+chmod +x web/run_dashboard.sh
 ./web/run_dashboard.sh
 ```
+Visit **http://127.0.0.1:8844** in your browser.
 
-Then open **http://127.0.0.1:8844/** (default port `8844`).
-
-Custom port:
-
-```bash
-PORT=9000 ./web/run_dashboard.sh
-```
-
-### Option B — manual virtualenv (useful on PEP 668 / Homebrew Python)
-
+### 3. Manual Installation
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
+source .venv/bin/activate
 pip install -r web/requirements.txt
 python -m uvicorn web.app:app --host 127.0.0.1 --port 8844
 ```
 
-### Web stack versions (`web/requirements.txt`)
-
-| Package | Role |
-|---------|------|
-| `fastapi` | HTTP API + serves `web/static/` |
-| `uvicorn` | ASGI server |
-| `plotly` | Figure JSON consumed by Plotly.js in the browser |
-| `numpy`, `scipy` | Same numerics as the scripts |
-
-### API (for tooling or `curl`)
-
-| Method | Path | Purpose |
-|--------|------|---------|
-| `GET` | `/api/health` | Liveness |
-| `GET` | `/api/p1?K=100&r=0.05&sigma=0.25&T0=1&seed=42` | Option surfaces |
-| `GET` | `/api/p2?n_paths=3000&n_days=252&...` | Drawdown + fan + terminal bar |
-| `GET` | `/api/p3?n_days=504&win=30&seed=99` | Correlation panels |
-
-Open **http://127.0.0.1:8844/docs** for interactive OpenAPI when the server is running.
-
 ---
 
-## 3. Static PNG gallery (optional)
+## 🐳 Docker & Cloud Deployment
 
-From repo root, any static file server works, for example:
+This project is optimized for **Hugging Face Spaces** using the Docker SDK.
 
 ```bash
-python3 -m http.server 8765 --bind 127.0.0.1
+docker build -t quant-terminal .
+docker run -p 7860:7860 quant-terminal
 ```
 
-Open **http://127.0.0.1:8765/gallery/index.html** to view the three exported figures side by side (refresh PNGs by re-running the Matplotlib scripts above).
-
 ---
 
-## Hugging Face Spaces
+## 📜 License
+MIT — See [LICENSE](LICENSE) for details.
 
-This repo includes a **`Dockerfile`** so you can host the same FastAPI + Plotly app on [Hugging Face Spaces](https://huggingface.co/docs/hub/spaces).
-
-### Create the Space
-
-1. Log in at [huggingface.co](https://huggingface.co) and open **Spaces → Create new Space**.
-2. Choose a name, set visibility (Public is typical for demos), and select **Docker** as the SDK (not Gradio or Streamlit).
-3. Under **Space repository**, either:
-   - **Duplicate files**: push this GitHub repo to the Space git (clone, add remote `hf`, push), or  
-   - **Connect a GitHub repository** (HF “Import from GitHub”) and point it at [alwaysprince05/cool-quant-projects](https://github.com/alwaysprince05/cool-quant-projects) on branch `main`.
-4. Ensure the Space root contains the **`Dockerfile`** from this project (already at repo root after you sync).
-5. Wait for the build to finish; HF will show **Running** when healthy.
-
-The container runs:
-
-`uvicorn web.app:app --host 0.0.0.0 --port 7860`
-
-(`PORT` is honored if the platform sets it.) Open the Space URL — the UI loads from `/` and APIs from `/api/...`.
-
-### Local Docker check (optional)
-
-```bash
-docker build -t cool-quant .
-docker run --rm -p 7860:7860 cool-quant
-```
-
-Then visit **http://127.0.0.1:7860/**.
-
----
-
-## Concepts you can explore
-
-- Monte Carlo paths, running maximum, and drawdown distributions  
-- Fat-tailed returns (mixture with Student-**t** shocks)  
-- Two-state Markov regimes and Cholesky-correlated returns  
-- Rolling correlation tensors and “correlation to one” intuition  
-- Black–Scholes price, Delta, Gamma, Theta on a spot × time grid  
-- Matplotlib 3D (`Poly3DCollection`, surfaces, `GridSpec`)  
-- Plotly surfaces / scatter / heatmaps for the web dashboard  
-
----
-
-## References
-
-- [Monte Carlo method](https://en.wikipedia.org/wiki/Monte_Carlo_method)  
-- [Markov chain](https://en.wikipedia.org/wiki/Markov_chain)  
-- [Black–Scholes model](https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model)  
-- [Financial risk](https://en.wikipedia.org/wiki/Financial_risk)  
+**Maintained by [@alwaysprince05](https://github.com/alwaysprince05)**
+l risk](https://en.wikipedia.org/wiki/Financial_risk)  
 - [Correlation and dependence](https://en.wikipedia.org/wiki/Correlation_and_dependence)  
 
 ---
