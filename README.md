@@ -13,7 +13,7 @@ short_description: Professional Quant Finance Terminal — Greeks & Risk.
 
 A high-performance quantitative finance dashboard for simulation-driven visualizations. Analyze **Option Greek Manifolds**, **Monte Carlo Drawdown Topologies**, and **Markov-Switching Correlations** in a premium, ultra-fast environment.
 
-### 🔗 [View Live App on Hugging Face Spaces](https://huggingface.co/spaces/alwaysprince05/cool-quant-projects)
+### 🔗 [View Live App on Hugging Face Spaces](https://huggingface.co/spaces/alwaysprince05e/cool-quant-projects)
 
 ---
 
