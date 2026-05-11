@@ -114,7 +114,7 @@ docker run -p 7860:7860 quant-terminal
 MIT — See [LICENSE](LICENSE) for details.
 
 **Maintained by [@alwaysprince05](https://github.com/alwaysprince05)**
-l risk](https://en.wikipedia.org/wiki/Financial_risk)  
+- [Financial risk](https://en.wikipedia.org/wiki/Financial_risk)  
 - [Correlation and dependence](https://en.wikipedia.org/wiki/Correlation_and_dependence)  
 
 ---
