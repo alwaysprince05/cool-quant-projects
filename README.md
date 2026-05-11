@@ -1,12 +1,12 @@
 ---
 title: Quant Terminal
 emoji: 💎
-colorFrom: cyan
+colorFrom: blue
 colorTo: indigo
 sdk: docker
 pinned: true
 license: mit
-short_description: Professional Quant Finance Terminal — Greeks, Risk & Regime Simulation.
+short_description: Professional Quant Finance Terminal — Greeks & Risk.
 ---
 
 # 💎 Quant Terminal: Institutional-Grade Analytics
