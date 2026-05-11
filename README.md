@@ -1,29 +1,38 @@
 ---
-title: Cool Quant Projects
-emoji: 📊
-colorFrom: blue
-colorTo: gray
+title: Quant Terminal
+emoji: 💎
+colorFrom: cyan
+colorTo: indigo
 sdk: docker
-pinned: false
+pinned: true
 license: mit
-short_description: Premium Quant Finance Dashboard — Greeks & Monte Carlo.
+short_description: Professional Quant Finance Terminal — Greeks, Risk & Regime Simulation.
 ---
 
-# 🚀 Cool Quant Projects: Interactive Terminal
+# 💎 Quant Terminal: Institutional-Grade Analytics
 
-A high-performance quantitative finance dashboard for simulation-driven visualizations. Analyze **Option Greek Manifolds**, **Monte Carlo Drawdown Topologies**, and **Markov-Switching Correlations** in a premium, interactive environment.
+A high-performance quantitative finance dashboard for simulation-driven visualizations. Analyze **Option Greek Manifolds**, **Monte Carlo Drawdown Topologies**, and **Markov-Switching Correlations** in a premium, ultra-fast environment.
 
-### 🔗 [View Live App on Hugging Face Spaces](https://huggingface.co/spaces/alwaysprince05e/cool-quant-projects)
+### 🔗 [View Live App on Hugging Face Spaces](https://huggingface.co/spaces/alwaysprince05/cool-quant-projects)
+
+---
+
+## 🚀 Key Improvements
+
+- **Ultra-Fast Performance:** Integrated client-side caching for near-instant switching between analysis modules.
+- **Institutional Design:** A state-of-the-art terminal interface using glassmorphism, **Outfit** & **JetBrains Mono** typography.
+- **Real-Time Monitoring:** Integrated latency and system status tracking.
+- **Dynamic Risk Models:** Optimized Monte Carlo engines for deep drawdown analysis.
 
 ---
 
 ## 💎 Premium Features
 
 - **Interactive 3D Manifolds:** Rotate and zoom into Option Greeks (Gamma, Theta) and P&L surfaces.
-- **Advanced Risk Metrics:** Real-time calculation of **Sharpe Ratio**, **95% VaR**, and **CVaR (Conditional VaR)** for simulated paths.
-- **Regime-Switching Dynamics:** Explore how asset correlations change during "Calm" vs. "Crisis" regimes using Markov-chain simulations.
-- **High-Resolution Exports:** All simulations are built on Plotly and can be exported as high-res PNGs for research reports.
-- **Premium Dark UI:** A professional-grade interface built with glassmorphism, modern typography (Inter/Fira Code), and fluid micro-animations.
+- **Advanced Risk Metrics:** Real-time calculation of **Sharpe Ratio**, **95% VaR**, and **CVaR (Conditional VaR)**.
+- **Regime-Switching Dynamics:** Explore how asset correlations change during "Calm" vs. "Crisis" regimes.
+- **High-Resolution Exports:** All simulations can be exported as high-res PNGs for research reports.
+- **Premium Dark UI:** Professional-grade interface with fluid micro-animations and responsive layout.
 
 ---
 
@@ -38,7 +47,7 @@ cool-quant-projects/
 │   ├── run_dashboard.sh           # Local Execution Script
 │   └── static/                    # Premium UI (HTML/CSS/JS)
 ├── gallery/                       # Static PNG Exports
-├── Dockerfile                     # Hugging Face Spaces Deployment Configuration
+├── Dockerfile                     # Deployment Configuration
 ├── README.md                      # Documentation
 └── LICENSE                        # MIT License
 ```
@@ -50,7 +59,7 @@ cool-quant-projects/
 ### 1. Option Greeks Manifold
 Visualize the sensitivity of European options to price and time.
 - **P&L Surface:** Dynamic P&L based on Spot Price vs. Days to Expiration (DTE).
-- **Gamma/Theta Surfaces:** Analyze the rate of change in Delta and the impact of time decay across the manifold.
+- **Gamma/Theta Surfaces:** Analyze the rate of change in Delta and the impact of time decay.
 
 ### 2. Drawdown Topology (Monte Carlo)
 Simulate thousands of portfolio paths with fat-tailed returns.
@@ -70,10 +79,10 @@ Analyze how multi-asset portfolios behave during market shifts.
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/alwaysprince05/cool-quant-projects.git
-cd cool-quant-projects/cool-quant-projects
+cd cool-quant-projects
 ```
 
-### 2. Run with Helper Script (Automatic Venv)
+### 2. Run with Helper Script
 ```bash
 chmod +x web/run_dashboard.sh
 ./web/run_dashboard.sh

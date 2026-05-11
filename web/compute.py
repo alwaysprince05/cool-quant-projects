@@ -130,11 +130,11 @@ def compute_p1(
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#a0a0ff", family="Inter, sans-serif", size=11),
+        font=dict(color="#94a3b8", family="Outfit, sans-serif", size=11),
         title=dict(
             text="Option Greeks Manifold Analysis",
             x=0.5,
-            font=dict(size=18, color="#fff"),
+            font=dict(size=18, color="#fff", weight=600),
         ),
         margin=dict(l=0, r=10, t=80, b=0),
         height=550,
@@ -142,9 +142,9 @@ def compute_p1(
     for i in range(1, 4):
         fig.update_scenes(
             dict(
-                xaxis=dict(gridcolor="#222", showbackground=False),
-                yaxis=dict(gridcolor="#222", showbackground=False),
-                zaxis=dict(gridcolor="#222", showbackground=False),
+                xaxis=dict(gridcolor="rgba(255,255,255,0.05)", showbackground=False),
+                yaxis=dict(gridcolor="rgba(255,255,255,0.05)", showbackground=False),
+                zaxis=dict(gridcolor="rgba(255,255,255,0.05)", showbackground=False),
                 bgcolor="rgba(0,0,0,0)",
             ),
             row=1,
@@ -312,12 +312,12 @@ def compute_p2(
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#88dd88", family="Inter, sans-serif", size=10),
+        font=dict(color="#94a3b8", family="Outfit, sans-serif", size=10),
         title=dict(
             text=f"Risk Analysis: Sharpe={sharpe:.2f} | 95% VaR={var_95_pct:.1f}% | CVaR={cvar_95_pct:.1f}%",
             x=0.5,
             y=0.95,
-            font=dict(size=16, color="#fff")
+            font=dict(size=16, color="#fff", weight=600)
         ),
         height=550,
         margin=dict(t=100, b=40, l=0, r=10),
@@ -327,9 +327,9 @@ def compute_p2(
     
     fig.update_scenes(
         dict(
-            xaxis=dict(gridcolor="#333", showbackground=False),
-            yaxis=dict(gridcolor="#333", showbackground=False),
-            zaxis=dict(gridcolor="#333", showbackground=False),
+            xaxis=dict(gridcolor="rgba(255,255,255,0.05)", showbackground=False),
+            yaxis=dict(gridcolor="rgba(255,255,255,0.05)", showbackground=False),
+            zaxis=dict(gridcolor="rgba(255,255,255,0.05)", showbackground=False),
             bgcolor="rgba(0,0,0,0)",
             aspectmode="manual",
             aspectratio=dict(x=1.5, y=1, z=0.5),
@@ -500,32 +500,32 @@ def compute_p3(
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#aaaaff", family="Inter, sans-serif", size=10),
+        font=dict(color="#94a3b8", family="Outfit, sans-serif", size=10),
         height=850,
         margin=dict(t=120, b=120, l=100, r=40),
         title=dict(
             text="Asset Correlation Dynamics (Markov-Switching Simulation)",
             x=0.5,
             y=0.96,
-            font=dict(size=20, color="#fff"),
+            font=dict(size=20, color="#fff", weight=600),
         ),
         showlegend=False,
     )
     
-    fig.update_xaxes(gridcolor="#222", zerolinecolor="#333", title_text="Trading Day", row=1, col=2)
-    fig.update_yaxes(gridcolor="#222", zerolinecolor="#333", title_text="Avg ρ", row=1, col=2)
+    fig.update_xaxes(gridcolor="rgba(255,255,255,0.05)", zerolinecolor="rgba(255,255,255,0.1)", title_text="Trading Day", row=1, col=2)
+    fig.update_yaxes(gridcolor="rgba(255,255,255,0.05)", zerolinecolor="rgba(255,255,255,0.1)", title_text="Avg ρ", row=1, col=2)
     
-    fig.update_xaxes(gridcolor="#222", zerolinecolor="#333", tickangle=-45, row=2, col=2)
-    fig.update_yaxes(gridcolor="#222", zerolinecolor="#333", title_text="|ρ|", row=2, col=2)
+    fig.update_xaxes(gridcolor="rgba(255,255,255,0.05)", zerolinecolor="rgba(255,255,255,0.1)", tickangle=-45, row=2, col=2)
+    fig.update_yaxes(gridcolor="rgba(255,255,255,0.05)", zerolinecolor="rgba(255,255,255,0.1)", title_text="|ρ|", row=2, col=2)
 
     fig.update_scenes(
         dict(
             xaxis_title="Day",
             yaxis_title="Pair",
             zaxis_title="ρ",
-            xaxis=dict(gridcolor="#333", showbackground=False),
-            yaxis=dict(gridcolor="#333", showbackground=False),
-            zaxis=dict(gridcolor="#333", showbackground=False),
+            xaxis=dict(gridcolor="rgba(255,255,255,0.05)", showbackground=False),
+            yaxis=dict(gridcolor="rgba(255,255,255,0.05)", showbackground=False),
+            zaxis=dict(gridcolor="rgba(255,255,255,0.05)", showbackground=False),
             bgcolor="rgba(0,0,0,0)",
         ),
         row=1,
