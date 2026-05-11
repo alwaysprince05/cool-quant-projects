@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cool Quant Projects — Live dashboard</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+  <style>
+    :root {
+      --bg: #080810;
+      --panel: #12121c;
+      --border: #2a2a3d;
+      --text: #e8e8f0;
+      --muted: #9898b8;
+      --accent: #6ae8ff;
+      --danger: #ff6b6b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      justify-content: space-between;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    header p { margin: 0; color: var(--muted); font-size: 0.85rem; }
+    nav {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+    nav button {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    nav button:hover { border-color: var(--accent); color: var(--accent); }
+    nav button.active {
+      background: #1a3040;
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(220px, 280px) 1fr;
+      gap: 0;
+      min-height: calc(100vh - 72px);
+    }
+    @media (max-width: 800px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    aside {
+      border-right: 1px solid var(--border);
+      padding: 1rem 1.1rem;
+      background: #0c0c14;
+    }
+    aside h2 {
+      margin: 0 0 0.75rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    .field {
+      margin-bottom: 0.75rem;
+    }
+    .field label {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+    .field input {
+      width: 100%;
+      padding: 0.4rem 0.5rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .actions button.primary {
+      background: linear-gradient(135deg, #1a6a80, #2a4080);
+      border: 1px solid var(--accent);
+      color: #fff;
+      padding: 0.65rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .actions button.primary:hover { filter: brightness(1.08); }
+    .actions button.secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.45rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    main {
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 560px;
+      flex: 1;
+      min-width: 0;
+    }
+    #plot {
+      flex: 1 1 auto;
+      width: 100%;
+      min-height: 520px;
+      height: calc(100vh - 130px);
+      position: relative;
+    }
+    #status {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    #status.error { color: var(--danger); }
+    #status.loading { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Cool Quant Projects</h1>
+      <p>Live simulations — drag to rotate 3D plots. Change parameters and run again.</p>
+    </div>
+    <nav id="tabs">
+      <button type="button" data-tab="p1" class="active">1 · Greeks</button>
+      <button type="button" data-tab="p2">2 · Drawdown</button>
+      <button type="button" data-tab="p3">3 · Correlations</button>
+    </nav>
+  </header>
+
+  <div class="layout">
+    <aside id="controls"></aside>
+    <main>
+      <div id="status">Ready.</div>
+      <div id="plot"></div>
+    </main>
+  </div>
+
+  <script>
+    const state = { tab: 'p1' };
+
+    const panels = {
+      p1: {
+        title: 'Option Greeks',
+        fields: [
+          { key: 'K', label: 'Strike K', type: 'number', step: '1', value: '100' },
+          { key: 'r', label: 'Risk-free r', type: 'number', step: '0.01', value: '0.05' },
+          { key: 'sigma', label: 'Volatility σ', type: 'number', step: '0.05', value: '0.25' },
+          { key: 'T0', label: 'Years to expiry T₀', type: 'number', step: '0.1', value: '1' },
+          { key: 'seed', label: 'Random seed', type: 'number', step: '1', value: '42' },
+        ],
+        endpoint: '/api/p1',
+      },
+      p2: {
+        title: 'Drawdown topology',
+        fields: [
+          { key: 'n_paths', label: 'Monte Carlo paths', type: 'number', step: '100', value: '3000' },
+          { key: 'n_days', label: 'Trading days', type: 'number', step: '1', value: '252' },
+          { key: 'mu_ann', label: 'Drift μ (annual)', type: 'number', step: '0.01', value: '0.12' },
+          { key: 'sig_ann', label: 'Vol σ (annual)', type: 'number', step: '0.01', value: '0.22' },
+          { key: 'df_t', label: 't-dist df (fat tails)', type: 'number', step: '1', value: '4' },
+          { key: 'shock_prob', label: 'Shock probability', type: 'number', step: '0.01', value: '0.07' },
+          { key: 'fan_paths', label: 'Paths in fan chart', type: 'number', step: '5', value: '60' },
+          { key: 'seed', label: 'Random seed', type: 'number', step: '1', value: '7' },
+        ],
+        endpoint: '/api/p2',
+      },
+      p3: {
+        title: 'Correlation regimes',
+        fields: [
+          { key: 'n_days', label: 'Simulated days', type: 'number', step: '1', value: '504' },
+          { key: 'win', label: 'Rolling window', type: 'number', step: '1', value: '30' },
+          { key: 'seed', label: 'Random seed', type: 'number', step: '1', value: '99' },
+        ],
+        endpoint: '/api/p3',
+      },
+    };
+
+    function renderControls() {
+      const cfg = panels[state.tab];
+      const el = document.getElementById('controls');
+      el.innerHTML = '<h2>' + cfg.title + '</h2>' +
+        cfg.fields.map(function (f) {
+          return '<div class="field"><label for="f-' + f.key + '">' + f.label + '</label>' +
+            '<input id="f-' + f.key + '" name="' + f.key + '" type="' + f.type + '" step="' + (f.step || 'any') + '" value="' + f.value + '" /></div>';
+        }).join('') +
+        '<div class="actions">' +
+        '<button type="button" class="primary" id="runBtn">Run simulation</button>' +
+        '<button type="button" class="secondary" id="resetBtn">Defaults</button></div>';
+      document.getElementById('runBtn').onclick = run;
+      document.getElementById('resetBtn').onclick = function () {
+        cfg.fields.forEach(function (f) {
+          var inp = document.getElementById('f-' + f.key);
+          if (inp) inp.value = f.value;
+        });
+        run();
+      };
+    }
+
+    function setStatus(msg, cls) {
+      var s = document.getElementById('status');
+      s.textContent = msg;
+      s.className = cls || '';
+    }
+
+    function queryParams() {
+      var cfg = panels[state.tab];
+      var parts = [];
+      cfg.fields.forEach(function (f) {
+        var inp = document.getElementById('f-' + f.key);
+        if (inp && inp.value !== '') parts.push(encodeURIComponent(f.key) + '=' + encodeURIComponent(inp.value));
+      });
+      return parts.join('&');
+    }
+
+    function plotConfig(fig) {
+      var base = { responsive: true, displayModeBar: true, scrollZoom: true, displaylogo: false };
+      if (fig && fig.config && typeof fig.config === 'object') {
+        Object.keys(fig.config).forEach(function (k) { base[k] = fig.config[k]; });
+      }
+      return base;
+    }
+
+    function run() {
+      var cfg = panels[state.tab];
+      setStatus('Computing…', 'loading');
+      var url = cfg.endpoint + '?' + queryParams();
+      var plotEl = document.getElementById('plot');
+      fetch(url)
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .then(function (fig) {
+          if (!fig || !Array.isArray(fig.data)) {
+            throw new Error('Invalid response: missing figure data');
+          }
+          var layout = fig.layout ? JSON.parse(JSON.stringify(fig.layout)) : {};
+          layout.autosize = true;
+          layout.margin = Object.assign({ t: 50, r: 20, b: 36, l: 56 }, layout.margin || {});
+          if (!layout.height) layout.height = Math.max(480, plotEl.clientHeight || 520);
+          try {
+            if (plotEl._fullLayout) Plotly.purge(plotEl);
+          } catch (e) { /* first paint */ }
+          return Plotly.newPlot(plotEl, fig.data, layout, plotConfig(fig));
+        })
+        .then(function () {
+          try {
+            return Plotly.Plots.resize(plotEl);
+          } catch (e) {
+            return null;
+          }
+        })
+        .then(function () {
+          setStatus('Done. Drag the chart to rotate (3D) or zoom.', '');
+        })
+        .catch(function (e) {
+          setStatus('Error: ' + e.message, 'error');
+          console.error(e);
+        });
+    }
+
+    window.addEventListener('resize', function () {
+      var plotEl = document.getElementById('plot');
+      try {
+        if (plotEl && plotEl._fullLayout) Plotly.Plots.resize(plotEl);
+      } catch (e) { /* no plot yet */ }
+    });
+
+    document.getElementById('tabs').addEventListener('click', function (ev) {
+      var btn = ev.target.closest('button[data-tab]');
+      if (!btn) return;
+      state.tab = btn.getAttribute('data-tab');
+      document.querySelectorAll('#tabs button').forEach(function (b) {
+        b.classList.toggle('active', b.getAttribute('data-tab') === state.tab);
+      });
+      renderControls();
+      run();
+    });
+
+    renderControls();
+    run();
+  </script>
+</body>
+</html>

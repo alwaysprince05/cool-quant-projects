@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cool Quant Projects — Gallery</title>
+  <style>
+    :root {
+      --bg: #0a0a12;
+      --panel: #12121c;
+      --text: #e8e8f0;
+      --muted: #8888aa;
+      --accent: #66ccff;
+      --border: #252535;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      padding: 2rem 1.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #101018 0%, var(--bg) 100%);
+    }
+    header h1 {
+      margin: 0 0 0.35rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      max-width: 52rem;
+    }
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+    section {
+      margin-bottom: 2.5rem;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    section h2 {
+      margin: 0;
+      padding: 1rem 1.25rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+    }
+    section p {
+      margin: 0;
+      padding: 0.75rem 1.25rem 0;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+    .figure {
+      padding: 1rem 1rem 1.25rem;
+    }
+    .figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      background: #000;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    code {
+      font-size: 0.85em;
+      background: #1a1a28;
+      padding: 0.15em 0.45em;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cool Quant Projects</h1>
+    <p><strong>Interactive dashboard:</strong> run <code>./web/run_dashboard.sh</code> from the repo root, then open <a href="http://127.0.0.1:8844/" style="color:#6ae8ff">http://127.0.0.1:8844/</a> for live Plotly charts and sliders.</p>
+    <p style="margin-top:0.5rem">Below: static PNG exports. Regenerate with <code>python3</code> in each project folder.</p>
+  </header>
+  <main>
+    <section>
+      <h2>1. Option Greeks Manifold</h2>
+      <p>Black–Scholes long-call P&amp;L surface, Gamma, and Theta over spot and time.</p>
+      <div class="figure">
+        <img src="../Option%20Greeks%20Manifold/outputs/p1_greeks_manifold.png" alt="Option Greeks Manifold visualization" />
+      </div>
+    </section>
+    <section>
+      <h2>2. Drawdown Topology</h2>
+      <p>Monte Carlo drawdown density landscape, path fan, and terminal value distribution.</p>
+      <div class="figure">
+        <img src="../Drawdown%20Topology/p2_drawdown_topology.png" alt="Drawdown topology visualization" />
+      </div>
+    </section>
+    <section>
+      <h2>3. Correlation Regime Dynamics</h2>
+      <p>Rolling cross-asset correlations, regime-colored average correlation, and current correlation matrix.</p>
+      <div class="figure">
+        <img src="../Correlation%20Regime%20Dynamics/p3_correlation_regimes.png" alt="Correlation regime dynamics visualization" />
+      </div>
+    </section>
+  </main>
+  <footer>Served locally — close the terminal when done.</footer>
+</body>
+</html>
