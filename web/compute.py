@@ -500,13 +500,13 @@ def compute_p3(
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#94a3b8", family="Outfit, sans-serif", size=10),
-        height=850,
-        margin=dict(t=120, b=120, l=100, r=40),
+        font=dict(color="#94a3b8", family="Outfit, sans-serif", size=11),
+        height=950,
+        margin=dict(t=120, b=150, l=100, r=40),
         title=dict(
             text="Asset Correlation Dynamics (Markov-Switching Simulation)",
             x=0.5,
-            y=0.96,
+            y=0.98,
             font=dict(size=20, color="#fff", weight=600),
         ),
         showlegend=False,
@@ -515,7 +515,10 @@ def compute_p3(
     fig.update_xaxes(gridcolor="rgba(255,255,255,0.05)", zerolinecolor="rgba(255,255,255,0.1)", title_text="Trading Day", row=1, col=2)
     fig.update_yaxes(gridcolor="rgba(255,255,255,0.05)", zerolinecolor="rgba(255,255,255,0.1)", title_text="Avg ρ", row=1, col=2)
     
-    fig.update_xaxes(gridcolor="rgba(255,255,255,0.05)", zerolinecolor="rgba(255,255,255,0.1)", tickangle=-45, row=2, col=2)
+    fig.update_xaxes(gridcolor="rgba(255,255,255,0.05)", zerolinecolor="rgba(255,255,255,0.1)", tickangle=-45, row=2, col=1)
+    fig.update_yaxes(gridcolor="rgba(255,255,255,0.05)", zerolinecolor="rgba(255,255,255,0.1)", row=2, col=1)
+
+    fig.update_xaxes(gridcolor="rgba(255,255,255,0.05)", zerolinecolor="rgba(255,255,255,0.1)", tickangle=-45, tickfont=dict(size=9), row=2, col=2)
     fig.update_yaxes(gridcolor="rgba(255,255,255,0.05)", zerolinecolor="rgba(255,255,255,0.1)", title_text="|ρ|", row=2, col=2)
 
     fig.update_scenes(
