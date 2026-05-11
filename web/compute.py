@@ -71,6 +71,8 @@ def compute_p1(
     S_g, T_g = np.meshgrid(spots, times)
     price_g, _delta_g, gamma_g, theta_g, _vega_g = bs(S_g, K, T_g, r, sigma)
     pnl_g = price_g - entry_price
+    
+    # Cap gamma for better visualization of the surface
     gamma_capped = np.minimum(gamma_g, np.percentile(gamma_g, 98))
     theta_cents = theta_g * 100.0
 
@@ -79,9 +81,9 @@ def compute_p1(
         cols=3,
         specs=[[{"type": "surface"}, {"type": "surface"}, {"type": "surface"}]],
         subplot_titles=(
-            f"Long call P&L  (K={K:g}, σ={sigma:.0%}, r={r:.0%})",
-            "Gamma",
-            "Theta (¢/day)",
+            f"Long Call P&L (K={K:g}, σ={sigma:.0%})",
+            "Gamma (Sensitivity)",
+            "Theta (Decay ¢/day)",
         ),
         horizontal_spacing=0.06,
     )
@@ -90,12 +92,11 @@ def compute_p1(
     fig.add_trace(
         go.Surface(
             x=spots,
-            y=times * 365.0,
+            y=dte,
             z=pnl_g,
             colorscale="RdYlGn",
             showscale=True,
-            cmin=-float(entry_price),
-            cmax=float(entry_price) * 3,
+            colorbar=dict(title="P&L ($)", len=0.4, y=0.5, x=0.31),
             name="P&L",
         ),
         row=1,
@@ -106,7 +107,7 @@ def compute_p1(
             x=spots,
             y=dte,
             z=gamma_capped,
-            colorscale="Hot",
+            colorscale="Viridis",
             showscale=False,
             name="Gamma",
         ),
@@ -118,7 +119,7 @@ def compute_p1(
             x=spots,
             y=dte,
             z=theta_cents,
-            colorscale="Blues_r",
+            colorscale="Magenta",
             showscale=False,
             name="Theta",
         ),
@@ -127,50 +128,34 @@ def compute_p1(
     )
 
     fig.update_layout(
-        paper_bgcolor="#060010",
-        plot_bgcolor="#060010",
-        font=dict(color="#cc99ff", size=11),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(color="#a0a0ff", family="Inter, sans-serif", size=11),
         title=dict(
-            text="Option Greeks manifold (interactive)",
+            text="Option Greeks Manifold Analysis",
             x=0.5,
-            font=dict(size=16),
+            font=dict(size=18, color="#fff"),
         ),
-        margin=dict(l=0, r=10, t=60, b=0),
-        height=520,
+        margin=dict(l=0, r=10, t=80, b=0),
+        height=550,
     )
     for i in range(1, 4):
         fig.update_scenes(
             dict(
-                xaxis=dict(backgroundcolor="#060010", gridcolor="#1a0040", showbackground=True),
-                yaxis=dict(backgroundcolor="#060010", gridcolor="#1a0040", showbackground=True),
-                zaxis=dict(backgroundcolor="#060010", gridcolor="#1a0040", showbackground=True),
-                bgcolor="#060010",
+                xaxis=dict(gridcolor="#222", showbackground=False),
+                yaxis=dict(gridcolor="#222", showbackground=False),
+                zaxis=dict(gridcolor="#222", showbackground=False),
+                bgcolor="rgba(0,0,0,0)",
             ),
             row=1,
             col=i,
         )
         if i == 1:
-            fig.update_scenes(
-                dict(
-                    xaxis_title="Spot ($)",
-                    yaxis_title="DTE",
-                    zaxis_title="P&L ($)",
-                ),
-                row=1,
-                col=1,
-            )
+            fig.update_scenes(dict(xaxis_title="Spot", yaxis_title="DTE", zaxis_title="P&L"), row=1, col=1)
         elif i == 2:
-            fig.update_scenes(
-                dict(xaxis_title="Spot", yaxis_title="DTE", zaxis_title="Γ"),
-                row=1,
-                col=2,
-            )
+            fig.update_scenes(dict(xaxis_title="Spot", yaxis_title="DTE", zaxis_title="Γ"), row=1, col=2)
         else:
-            fig.update_scenes(
-                dict(xaxis_title="Spot", yaxis_title="DTE", zaxis_title="Θ ¢"),
-                row=1,
-                col=3,
-            )
+            fig.update_scenes(dict(xaxis_title="Spot", yaxis_title="DTE", zaxis_title="Θ"), row=1, col=3)
 
     return _fig_to_json(fig)
 
@@ -203,6 +188,13 @@ def compute_p2(
 ) -> dict[str, Any]:
     rng = np.random.default_rng(seed)
     paths = fat_gbm(n_paths, n_days, mu_ann, sig_ann, df_t=df_t, shock_prob=shock_prob, rng=rng)
+    
+    # Calculate returns for Sharpe Ratio
+    periodic_returns = paths[:, 1:] / paths[:, :-1] - 1
+    mean_ret = np.mean(periodic_returns) * 252
+    vol_ret = np.std(periodic_returns) * np.sqrt(252)
+    sharpe = mean_ret / vol_ret if vol_ret > 0 else 0
+    
     running_max = np.maximum.accumulate(paths, axis=1)
     drawdowns = (paths - running_max) / running_max
 
@@ -219,14 +211,19 @@ def compute_p2(
 
     median_dd = np.median(drawdowns, axis=0) * 100
     p5_dd = np.percentile(drawdowns, 5, axis=0) * 100
-    var_95 = np.percentile(drawdowns[:, -1], 5) * 100
+    
+    # Terminal metrics
+    terminal_vals = paths[:, -1]
+    var_95 = np.percentile(terminal_vals, 5)
+    cvar_95 = np.mean(terminal_vals[terminal_vals <= var_95])
+    var_95_pct = (var_95 - 1) * 100
+    cvar_95_pct = (cvar_95 - 1) * 100
 
     radar_colors = [
-        [0, "rgb(0,0,0)"],
-        [0.15, "rgb(0,26,0)"],
-        [0.35, "rgb(0,102,0)"],
-        [0.6, "rgb(0,204,0)"],
-        [0.85, "rgb(255,255,0)"],
+        [0, "rgb(10,10,20)"],
+        [0.2, "rgb(20,40,80)"],
+        [0.5, "rgb(40,100,200)"],
+        [0.8, "rgb(100,200,255)"],
         [1, "rgb(255,255,255)"],
     ]
 
@@ -236,9 +233,9 @@ def compute_p2(
         column_widths=[0.52, 0.26, 0.22],
         specs=[[{"type": "surface"}, {"type": "scatter3d"}, {"type": "bar"}]],
         subplot_titles=(
-            f"Drawdown topology (μ={mu_ann:.0%}, σ={sig_ann:.0%}, N={n_paths})",
-            "Path fan (final P&L color)",
-            "Terminal value density",
+            "Drawdown Density Surface",
+            "Path Projections",
+            "Terminal Wealth Distribution",
         ),
         horizontal_spacing=0.04,
     )
@@ -250,7 +247,7 @@ def compute_p2(
             z=log_density,
             colorscale=radar_colors,
             showscale=True,
-            colorbar=dict(title="log(1+ρ)", len=0.55, y=0.45),
+            colorbar=dict(title="Density", len=0.4, y=0.5, x=0.48),
         ),
         row=1,
         col=1,
@@ -260,9 +257,10 @@ def compute_p2(
         dd_path = drawdowns[idx] * 100
         final_val = paths[idx, -1]
         color_val = float(np.clip((final_val - 0.5) / 2.0, 0, 1))
-        r = int(255 * (1 - color_val) + 99 * color_val)
-        g = int(255 * color_val + 107 * (1 - color_val))
-        b = int(107 * (1 - color_val))
+        # Gradient from Red (Loss) to Green (Profit)
+        r = int(255 * (1 - color_val))
+        g = int(255 * color_val)
+        b = 100
         col = f"rgb({r},{g},{b})"
         fig.add_trace(
             go.Scatter3d(
@@ -270,8 +268,8 @@ def compute_p2(
                 y=dd_path,
                 z=np.zeros_like(days_arr),
                 mode="lines",
-                line=dict(color=col, width=2),
-                opacity=0.35,
+                line=dict(color=col, width=1.5),
+                opacity=0.3,
                 showlegend=False,
             ),
             row=1,
@@ -290,56 +288,51 @@ def compute_p2(
         row=1,
         col=2,
     )
-    fig.add_trace(
-        go.Scatter3d(
-            x=days_arr,
-            y=p5_dd,
-            z=np.zeros_like(days_arr, dtype=float),
-            mode="lines",
-            line=dict(color="#ff4444", width=4),
-            name="5th pct DD",
-        ),
-        row=1,
-        col=2,
-    )
-
-    terminal_vals = paths[:, -1]
+    
     val_bins = np.linspace(0.1, 4.0, 80)
     val_mid = (val_bins[:-1] + val_bins[1:]) / 2
     hist_vals, _ = np.histogram(terminal_vals, bins=val_bins, density=True)
-    hist_smooth = gaussian_filter(hist_vals, sigma=2)
-    bar_colors = [
-        f"rgb({int(255*(1-t))},{int(200*t+55)},{int(80*t)})" for t in np.linspace(0.15, 0.85, len(val_mid))
-    ]
+    hist_smooth = gaussian_filter(hist_vals, sigma=1.5)
+    
     fig.add_trace(
         go.Bar(
             x=val_mid,
             y=hist_smooth,
-            marker_color=bar_colors,
-            name="Terminal",
+            marker=dict(
+                color=val_mid,
+                colorscale="Portland",
+                showscale=False
+            ),
+            name="Density",
         ),
         row=1,
         col=3,
     )
 
     fig.update_layout(
-        paper_bgcolor="#020810",
-        plot_bgcolor="#020810",
-        font=dict(color="#88dd88", size=10),
-        title=dict(text=f"Annual VaR (95%) ≈ {var_95:.1f}% on simulated paths", x=0.5, y=0.98),
-        height=520,
-        margin=dict(t=70, b=40, l=0, r=10),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(color="#88dd88", family="Inter, sans-serif", size=10),
+        title=dict(
+            text=f"Risk Analysis: Sharpe={sharpe:.2f} | 95% VaR={var_95_pct:.1f}% | CVaR={cvar_95_pct:.1f}%",
+            x=0.5,
+            y=0.95,
+            font=dict(size=16, color="#fff")
+        ),
+        height=550,
+        margin=dict(t=100, b=40, l=0, r=10),
         showlegend=True,
         legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0.02),
     )
+    
     fig.update_scenes(
         dict(
-            xaxis_title="Trading day",
-            yaxis_title="Drawdown %",
-            zaxis_title="log density",
+            xaxis=dict(gridcolor="#333", showbackground=False),
+            yaxis=dict(gridcolor="#333", showbackground=False),
+            zaxis=dict(gridcolor="#333", showbackground=False),
+            bgcolor="rgba(0,0,0,0)",
             aspectmode="manual",
-            aspectratio=dict(x=1.4, y=1, z=0.45),
-            bgcolor="#020810",
+            aspectratio=dict(x=1.5, y=1, z=0.5),
         ),
         row=1,
         col=1,
@@ -349,13 +342,13 @@ def compute_p2(
             xaxis_title="Day",
             yaxis_title="DD %",
             zaxis=dict(showticklabels=False, title=""),
-            bgcolor="#020810",
+            bgcolor="rgba(0,0,0,0)",
         ),
         row=1,
         col=2,
     )
-    fig.update_xaxes(title_text="Portfolio value", row=1, col=3)
-    fig.update_yaxes(title_text="Density", row=1, col=3)
+    fig.update_xaxes(title_text="Portfolio Value", row=1, col=3, gridcolor="#333")
+    fig.update_yaxes(title_text="Probability", row=1, col=3, gridcolor="#333")
 
     return _fig_to_json(fig)
 
@@ -512,20 +505,46 @@ def compute_p3(
     )
 
     fig.update_layout(
-        paper_bgcolor="#050508",
-        plot_bgcolor="#0a0a18",
-        font=dict(color="#aaaaff", size=10),
-        height=780,
-        margin=dict(t=80, b=30, l=60, r=20),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(color="#aaaaff", family="Inter, sans-serif", size=10),
+        height=800,
+        margin=dict(t=100, b=40, l=60, r=20),
         title=dict(
-            text="Correlation regime dynamics (Markov-switching simulation)",
+            text="Asset Correlation Dynamics (Markov-Switching Simulation)",
             x=0.5,
-            font=dict(size=15),
+            font=dict(size=18, color="#fff"),
         ),
         showlegend=False,
     )
-    fig.update_xaxes(title_text="Trading day", row=1, col=1)
-    fig.update_xaxes(title_text="Trading day", row=1, col=2)
-    fig.update_yaxes(title_text="Avg correlation", row=1, col=2)
+    
+    # Asset descriptions for the matrix
+    asset_desc = {
+        "SPY": "S&P 500",
+        "QQQ": "Nasdaq 100",
+        "TLT": "20Y Treasury",
+        "GLD": "Gold",
+        "VIX_inv": "Inverse VIX",
+        "HYG": "High Yield Bonds"
+    }
+    
+    fig.update_xaxes(gridcolor="#222", zerolinecolor="#333")
+    fig.update_yaxes(gridcolor="#222", zerolinecolor="#333")
+    
+    for i in range(1, 3):
+        for j in range(1, 3):
+            fig.update_xaxes(title_font=dict(size=10), row=i, col=j)
+            fig.update_yaxes(title_font=dict(size=10), row=i, col=j)
+
+    fig.update_scenes(
+        dict(
+            xaxis=dict(gridcolor="#333", showbackground=False),
+            yaxis=dict(gridcolor="#333", showbackground=False),
+            zaxis=dict(gridcolor="#333", showbackground=False),
+            bgcolor="rgba(0,0,0,0)",
+        ),
+        row=1,
+        col=1,
+    )
 
     return _fig_to_json(fig)

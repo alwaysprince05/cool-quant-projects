@@ -6,145 +6,252 @@
   <title>Cool Quant Projects — Live dashboard</title>
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap');
+    
     :root {
-      --bg: #080810;
-      --panel: #12121c;
-      --border: #2a2a3d;
-      --text: #e8e8f0;
-      --muted: #9898b8;
-      --accent: #6ae8ff;
-      --danger: #ff6b6b;
+      --bg: #030303;
+      --panel: rgba(18, 18, 30, 0.7);
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #ffffff;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.3);
+      --danger: #ef4444;
+      --success: #10b981;
     }
+
     * { box-sizing: border-box; }
+    
     body {
       margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font-family: 'Inter', sans-serif;
       background: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%);
       color: var(--text);
       min-height: 100vh;
+      overflow-x: hidden;
     }
+
     header {
-      padding: 1rem 1.25rem;
+      padding: 1.5rem 2rem;
       border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      background: rgba(0, 0, 0, 0.3);
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 1rem;
+      gap: 1.5rem;
       justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
+
     header h1 {
       margin: 0;
-      font-size: 1.2rem;
-      font-weight: 600;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(to right, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    header p { margin: 0; color: var(--muted); font-size: 0.85rem; }
+
+    header p { 
+      margin: 0.2rem 0 0; 
+      color: var(--muted); 
+      font-size: 0.875rem; 
+    }
+
     nav {
       display: flex;
-      gap: 0.35rem;
-      flex-wrap: wrap;
-    }
-    nav button {
-      background: var(--panel);
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.25rem;
+      border-radius: 12px;
       border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0.45rem 0.85rem;
+    }
+
+    nav button {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 0.5rem 1rem;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    nav button:hover { border-color: var(--accent); color: var(--accent); }
+
+    nav button:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
     nav button.active {
-      background: #1a3040;
-      border-color: var(--accent);
-      color: var(--accent);
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 0 20px var(--accent-glow);
     }
+
     .layout {
       display: grid;
-      grid-template-columns: minmax(220px, 280px) 1fr;
+      grid-template-columns: 320px 1fr;
       gap: 0;
-      min-height: calc(100vh - 72px);
+      min-height: calc(100vh - 88px);
     }
-    @media (max-width: 800px) {
+
+    @media (max-width: 1024px) {
       .layout { grid-template-columns: 1fr; }
+      aside { border-right: none; border-bottom: 1px solid var(--border); }
     }
+
     aside {
       border-right: 1px solid var(--border);
-      padding: 1rem 1.1rem;
-      background: #0c0c14;
+      padding: 2rem;
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(8px);
     }
+
     aside h2 {
-      margin: 0 0 0.75rem;
+      margin: 0 0 1.5rem;
       font-size: 0.75rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--muted);
+      letter-spacing: 0.1em;
+      color: var(--accent);
     }
+
     .field {
-      margin-bottom: 0.75rem;
+      margin-bottom: 1.25rem;
     }
+
     .field label {
       display: block;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
+      font-weight: 600;
       color: var(--muted);
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
+
     .field input {
       width: 100%;
-      padding: 0.4rem 0.5rem;
-      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
       border: 1px solid var(--border);
-      background: var(--panel);
+      background: rgba(255, 255, 255, 0.03);
       color: var(--text);
-      font-size: 0.9rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.875rem;
+      transition: all 0.2s;
     }
+
+    .field input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
     .actions {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
-      margin-top: 1rem;
+      gap: 0.75rem;
+      margin-top: 2rem;
     }
+
     .actions button.primary {
-      background: linear-gradient(135deg, #1a6a80, #2a4080);
-      border: 1px solid var(--accent);
-      color: #fff;
-      padding: 0.65rem 1rem;
-      border-radius: 8px;
-      font-weight: 600;
+      background: var(--accent);
+      border: none;
+      color: #000;
+      padding: 0.875rem;
+      border-radius: 10px;
+      font-weight: 700;
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
     }
-    .actions button.primary:hover { filter: brightness(1.08); }
+
+    .actions button.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
+    }
+
     .actions button.secondary {
       background: transparent;
       border: 1px solid var(--border);
       color: var(--muted);
-      padding: 0.45rem;
-      border-radius: 8px;
+      padding: 0.75rem;
+      border-radius: 10px;
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: all 0.2s;
     }
+
+    .actions button.secondary:hover {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      border-color: var(--muted);
+    }
+
     main {
-      padding: 0.5rem;
+      padding: 2rem;
       display: flex;
       flex-direction: column;
-      min-height: 560px;
-      flex: 1;
-      min-width: 0;
+      background: radial-gradient(circle at center, rgba(56, 189, 248, 0.03) 0%, transparent 70%);
     }
+
     #plot {
-      flex: 1 1 auto;
+      flex: 1;
       width: 100%;
-      min-height: 520px;
-      height: calc(100vh - 130px);
-      position: relative;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(4px);
+      overflow: hidden;
+      min-height: 600px;
     }
+
     #status {
-      padding: 0.5rem 0.75rem;
-      font-size: 0.85rem;
-      color: var(--muted);
+      margin-bottom: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    #status.error { color: var(--danger); }
-    #status.loading { color: var(--accent); }
+
+    #status::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    #status.error { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
+    #status.error::before { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+    
+    #status.loading { color: var(--accent); background: rgba(56, 189, 248, 0.1); }
+    #status.loading::before { 
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.5; }
+      100% { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
